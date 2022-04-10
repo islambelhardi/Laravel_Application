@@ -1,2 +1,2 @@
 <?php
-echo 'You are not authorized';
+echo 'Api token works';
