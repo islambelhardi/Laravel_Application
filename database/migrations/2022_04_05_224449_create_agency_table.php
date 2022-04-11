@@ -32,6 +32,6 @@ class CreateAgencyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('agency');
+        Schema::dropIfExists('agencies');
     }
 }
