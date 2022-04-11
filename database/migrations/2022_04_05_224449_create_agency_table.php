@@ -13,7 +13,7 @@ class CreateAgencyTable extends Migration
      */
     public function up()
     {
-        Schema::create('agencies', function (Blueprint $table) {
+        Schema::create('agency', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
@@ -32,6 +32,6 @@ class CreateAgencyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('agencies');
+        Schema::dropIfExists('agency');
     }
 }

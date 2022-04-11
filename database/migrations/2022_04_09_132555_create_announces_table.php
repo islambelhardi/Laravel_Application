@@ -15,7 +15,7 @@ class CreateAnnouncesTable extends Migration
     {
         Schema::create('announces', function (Blueprint $table) {
             $table->id();
-            $table->string('titre');
+            $table->string('title');
             $table->mediumText('description');
             $table->string('dealtype');
             $table->string('propretytype');
@@ -24,6 +24,8 @@ class CreateAnnouncesTable extends Migration
             $table->integer('price');
             $table->integer('viewsnumber');
             $table->json('place');
+            $table->unsignedBigInteger('agency_id');
+            $table->foreign('agency_id')->references('id')->on('agencies');
             $table->timestamps();
         });
     }
