@@ -71,7 +71,7 @@ class AgencyController extends Controller
             //specify the storage path
             $destination_path=public_path('/Agency/photos');
             //generate a name for the image
-            $image_name = time().'.'.$image->getClientOriginalExtension();
+            $image_name = '/Agency/photos/'.rand().'.'.$image->getClientOriginalExtension();
             // upload the image to the desi
             $request->photo->move($destination_path,$image_name);
             $agency->image=$image_name;
@@ -81,14 +81,15 @@ class AgencyController extends Controller
         // if they want to change their existing photo
         else{
             $image=$agency->image;
-            $image_path=public_path("/Agency/photos/{$image}");
+            $image_path=public_path("{$image}");
+            echo $image_path;
             // delete the previous image
             File::delete($image_path);
             $image=$request->file('photo');
             //specify the storage path
             $destination_path=public_path('/Agency/photos');
             //generate a name for the image
-            $image_name = time().'.'.$image->getClientOriginalExtension();
+            $image_name = '/Agency/photos/'.rand().'.'.$image->getClientOriginalExtension();
             // upload the image to the desi
             $request->photo->move($destination_path,$image_name);
             $agency->image=$image_name;

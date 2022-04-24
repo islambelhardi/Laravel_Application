@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use \App\Http\Controllers\AgencyAuthController;
+use \App\Http\Controllers\AnnounceController;
+use \App\Http\Controllers\FilterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -55,9 +57,17 @@ Route::prefix('agency/modify')->middleware('auth:api')->group(function (){
     Route::post('photo',[AgencyController::class,'modifyphoto'])->name('modifyphoto');
     Route::post('phone-number',[AgencyController::class,'modifyphone'])->name('modifyphone');
 });
+Route::prefix('announce')->group(function(){
+    Route::post('create',[AnnounceController::class,'createannounce'])->middleware('auth:api');
+    Route::post('modify',[AnnounceController::class,'modifyannounce'])->middleware('auth:api');
+    Route::post('show',[AnnounceController::class,'showannounce']);
+    Route::delete('delete',[AnnounceController::class,'deleteannounce']);
+    Route::post('filter',[FilterController::class,'filterannounces']);
+    Route::get('forrent',[AnnounceController::class,'getrent']);
+    Route::get('forsell',[AnnounceController::class,'getsell']);
+});
 
-
-    Route::get('/email/verify', function () {
+Route::get('/email/verify', function () {
         return Response('Email verification sent', 200);
     })->middleware('auth')->name('verification.notice');
     // the route that handle email verification
@@ -69,11 +79,11 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
         }
         echo 'email verified';
     })->middleware(['signed'])->name('verification.verify');
-Route::get('/email/verify/{id}/{hash}', function (Request $request) {
+/*Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     $agency = \App\Models\Agency::where('id', $request->id)->first();
     if (! $agency->hasVerifiedEmail()) {
         $agency->markEmailAsVerified();
         event(new Verified($agency));
     }
     echo 'email verified';
-})->middleware(['signed'])->name('verification.verify');
+})->middleware(['signed'])->name('verification.verify');*/

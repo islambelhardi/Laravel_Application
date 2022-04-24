@@ -16,7 +16,8 @@ class AgencyAuthController extends Controller
         $rules = [
             'name' => 'required|string',
             'email' => 'required|string|unique:agencies',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:8',
+            'phone_number'=>'required|integer',
         ];
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
@@ -26,6 +27,7 @@ class AgencyAuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone_number'=> $request->phone_number,
         ]);
         event(new Registered($agency));
         return response()->json('A Verification email sent confirm your email before login', 200);
