@@ -11,6 +11,8 @@ use App\Http\Controllers\UserController;
 use \App\Http\Controllers\AgencyAuthController;
 use \App\Http\Controllers\AnnounceController;
 use \App\Http\Controllers\FilterController;
+use \App\Http\Controllers\CommentController;
+use \App\Http\Controllers\LikeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -31,6 +33,7 @@ Route::prefix('user')->group(function (){
     Route::post('login',[AuthController::class,'login']);
     // to logout
     Route::get('logout',[AuthController::class,'logout'])->middleware('auth:api');
+    Route::get('info',[UserController::class,'index'])->middleware('auth:api');
 });
 //User Authentication
 //User Personal Data
@@ -60,13 +63,16 @@ Route::prefix('agency/modify')->middleware('auth:api')->group(function (){
 Route::prefix('announce')->group(function(){
     Route::post('create',[AnnounceController::class,'createannounce'])->middleware('auth:api');
     Route::post('modify',[AnnounceController::class,'modifyannounce'])->middleware('auth:api');
-    Route::post('show',[AnnounceController::class,'showannounce']);
+    Route::get('show',[AnnounceController::class,'showannounce']);
     Route::delete('delete',[AnnounceController::class,'deleteannounce']);
     Route::post('filter',[FilterController::class,'filterannounces']);
+    Route::post('comment',[CommentController::class,'create']);
     Route::get('forrent',[AnnounceController::class,'getrent']);
     Route::get('forsell',[AnnounceController::class,'getsell']);
 });
-
+Route::resource('likes', LikeController::class)->only([
+    'index', 'store', 'destroy'
+]);
 Route::get('/email/verify', function () {
         return Response('Email verification sent', 200);
     })->middleware('auth')->name('verification.notice');

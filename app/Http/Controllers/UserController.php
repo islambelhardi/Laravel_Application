@@ -11,6 +11,12 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function index(Request  $request){
+        // to get user id based on his token
+        $user_id= auth('api')->user()->id;
+        $user = User::Where('id',$user_id)->first();
+        return response()->json($user);
+    }
     //
     public function modifyinfo(Request $request){
         // to get user id based on his token
@@ -26,17 +32,27 @@ class UserController extends Controller
                 $user->save();
                 return response()->json('username has changed', 200);
             }
-            // if user changes only his email
-            if($user->email!==$request->email&& ! $validator->fails()){
+            // change both use name and email
+            if($user->email!==$request->email &&$user->name!== $request->name&& ! $validator->fails()){
+                $user->name= $request->name;
+                $user->email = $request->email;
+                $user->email_verified_at=null;
+                $user->save();
+                event(new Registered($user));
+                return response()->json('info updated verify your new email', 200);
+            }// if user changes only his email
+            elseif ($user->email!==$request->email&& ! $validator->fails()){
                 $user->email = $request->email;
                 $user->email_verified_at=null;
                 $user->save();
                 event(new Registered($user));
                 return response()->json('email has changed verify your new email', 200);
+
             }else{
                 // if the user try enter a taken email
                 return response()->json('email already taken', 400);
             }
+
         }else{
             return response()->json('wrong password ',400);
         }
