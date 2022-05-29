@@ -22,8 +22,10 @@ class UserController extends Controller
         // to get user id based on his token
         $user_id= auth('api')->user()->id;
         $user = User::Where('id',$user_id)->first();
-        $rules=['email' => 'string|unique:users'];
-        $validator = Validator::make($request->all(),$rules );
+        if ($user->email!==$request->email){
+            $rules=['email' => 'string|unique:users'];
+            $validator = Validator::make($request->all(),$rules );
+        }
         // first we need to verify the user password
         if ($user && Hash::check($request->password, $user->password)){
             // if the user change only his name
@@ -41,7 +43,7 @@ class UserController extends Controller
                 event(new Registered($user));
                 return response()->json('info updated verify your new email', 200);
             }// if user changes only his email
-            elseif ($user->email!==$request->email&& ! $validator->fails()){
+            elseif ($user->email!==$request->email&& !$validator->fails()){
                 $user->email = $request->email;
                 $user->email_verified_at=null;
                 $user->save();
