@@ -12,14 +12,27 @@ class LikeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         $user_id = auth('api')->user()->id;
         $user =User::Where('id',$user_id)->first();
-        $user->likes;
-        return $user;
+        $likesarray=$user->likes->toarray();
+        if (count($likesarray)==0){
+            return response()->json('you haven\'t liked any announces yet',400);
+        }
+        $announces_id =array();
+        for ($i=0; $i<count($likesarray);$i++){
+            $announces_id[] = $likesarray[$i]['announce_id'];
+        }
+        $announces=array();
+        for ($i=0; $i<count($announces_id);$i++){
+            $announce = new  Announce();
+            $announce =  $announce::Where('id',$announces_id[$i])->first();
+           $announces[]=$announce;
+        }
+        return response()->json($announces,200);
         }
 
     /**

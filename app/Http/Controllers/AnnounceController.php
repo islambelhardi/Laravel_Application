@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Agency;
 use App\Models\Announce;
 use App\Models\Image;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\File;
 class AnnounceController extends Controller
 {
     //
+    public function index(){
+        return Announce::all();
+    }
     public function createannounce(Request $request){
         // handle request validation
         /*$this->validate($request->all(),[
@@ -23,8 +27,8 @@ class AnnounceController extends Controller
             'surface'=>'integer',
             'price'=>'integer',
         ]);*/
-        $agency_id=auth('api')->user()->id;
-        $agency = Agency::Where('id', $agency_id)->first();
+        $user_id=auth('api')->user()->id;
+        $user = User::Where('id', $user_id)->first();
         $announce = new Announce();
         $details=[
             $announce->title=$request->title,
@@ -35,7 +39,7 @@ class AnnounceController extends Controller
             $announce->surface=$request->surface,
             $announce->price=$request->price,
             $announce->place=$request->place,
-            $announce->agency_id=$agency->id
+            $announce->user_id=$user->id
         ];
         $announce->save($details);
         $destination_path=public_path('/AnnouncesImages/');
@@ -50,6 +54,8 @@ class AnnounceController extends Controller
                 $image->url=$image_name;
                 //save the foreignkey
                 $image->announce_id=$announce->id;
+                $announce->img=$image_name;
+                $announce->save();
                 $image->save();
             }
             return response()->json('announce listed successfully',201);
@@ -70,12 +76,13 @@ class AnnounceController extends Controller
         $announce->roomnumber=$request->roomnumber,
         $announce->surface=$request->surface,
         $announce->price=$request->price,
-        $announce->place=json_encode($request->place),
+        $announce->place=$request->place,
     ];
         $announce->save($changes);
         //delete the images passed as array
         if ($request->has('todeleteimages')){
-            foreach ($request->todeleteimages as $image){
+           foreach ($request->todeleteimages as $image){
+                //echo $image. "\n";
                 $image_path=public_path("{$image}");
                 if (File::delete($image_path)==true){
                     DB::table('images')
@@ -100,6 +107,7 @@ class AnnounceController extends Controller
                 //save the foreignkey
                 $image->announce_id=$announce->id;
                 $image->save();
+                echo 'images uploaded';
             }
         }
         return response()->json('Announce edited ',200);
@@ -136,5 +144,11 @@ class AnnounceController extends Controller
     public function getsell(){
         $announces =DB::table('announces')->where('dealtype','sale')->get();
         return response()->json($announces);
+    }
+    public function myannounces(){
+        $agency_id= auth('api')->user()->id;
+        $agency = User::Where('id',$agency_id)->first();
+        $myannounces=$agency->announces;
+        return response()->json($myannounces);
     }
 }

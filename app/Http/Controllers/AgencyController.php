@@ -57,56 +57,7 @@ class AgencyController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      */
 
-    public function modifyphoto(Request $request){
-        //get the agency id based on their token
-        $agency_id=auth('api')->user()->id;
-        $agency = Agency::Where('id', $agency_id)->first();
-        // to validate that the request has a valid image
-        $request->validate([
-            'photo' => 'required|mimes:jpeg,png,jpg,svg|max:5048',
-        ]);
-        // if the agency doesnt have a photo already
-        if ($agency->image==null ){
-            $image=$request->file('photo');
-            //specify the storage path
-            $destination_path=public_path('/Agency/photos');
-            //generate a name for the image
-            $image_name = '/Agency/photos/'.rand().'.'.$image->getClientOriginalExtension();
-            // upload the image to the desi
-            $request->photo->move($destination_path,$image_name);
-            $agency->image=$image_name;
-            $agency->save();
-            return response()->json('image uploaded seccessfully',200);
-        }
-        // if they want to change their existing photo
-        else{
-            $image=$agency->image;
-            $image_path=public_path("{$image}");
-            echo $image_path;
-            // delete the previous image
-            File::delete($image_path);
-            $image=$request->file('photo');
-            //specify the storage path
-            $destination_path=public_path('/Agency/photos');
-            //generate a name for the image
-            $image_name = '/Agency/photos/'.rand().'.'.$image->getClientOriginalExtension();
-            // upload the image to the desi
-            $request->photo->move($destination_path,$image_name);
-            $agency->image=$image_name;
-            $agency->save();
-            return response()->json('image changed seccessfully',200);
-        }
-    }
 
-    public function modifyphone(Request $request){
-        // to get user id based on his token
-        $agency_id= auth('api')->user()->id;
-        $agency = Agency::Where('id',$agency_id)->first();
-        $request->validate([
-            'phone_number' => 'required|integer',
-        ]);
-        $agency->phone_number=$request->phone_number;
-        $agency->save();
-        return response()->json('phone number changed ', 200);
-    }
+
+
 }

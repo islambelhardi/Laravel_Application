@@ -21,6 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
+        'image',
+        'phone_number',
     ];
 
     /**
@@ -43,5 +45,9 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
     public function likes(){
         return $this->hasMany('App\Models\Like','user_id');
+    }
+    public function announces()
+    {
+        return $this->hasMany('App\Models\Announce', 'user_id');
     }
 }

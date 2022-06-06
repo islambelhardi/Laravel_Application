@@ -15,7 +15,7 @@ class Announce extends Model
 
     public function agency()
     {
-        return $this->belongsTo('App\Models\Agency', 'agency_id');
+        return $this->belongsTo('App\Models\User', 'user_id');
     }
     public function images()
     {

@@ -23,10 +23,11 @@ class CreateAnnouncesTable extends Migration
             $table->integer('roomnumber');
             $table->integer('surface');
             $table->integer('price');
-            $table->integer('viewsnumber');
+            $table->string('img');
+            $table->integer('viewsnumber')->default(0);
             $table->json('place');
-            $table->unsignedBigInteger('agency_id');
-            $table->foreign('agency_id')->references('id')->on('agencies')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

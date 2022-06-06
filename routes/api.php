@@ -34,12 +34,15 @@ Route::prefix('user')->group(function (){
     // to logout
     Route::get('logout',[AuthController::class,'logout'])->middleware('auth:api');
     Route::get('info',[UserController::class,'index'])->middleware('auth:api');
+
 });
 //User Authentication
 //User Personal Data
 Route::prefix('user/modify')->middleware('auth:api')->group(function (){
     Route::post('info',[UserController::class,'modifyinfo'])->name('updateinfo');
     Route::post('password',[UserController::class,'modifypassword']);
+    Route::post('photo',[UserController::class,'modifyphoto'])->name('modifyphoto');
+    Route::post('phone-number',[UserController::class,'modifyphone'])->name('modifyphone');
 });
 //User Personal Data
 //Agency Auth Service
@@ -57,8 +60,8 @@ Route::prefix('agency')->group(function (){
 Route::prefix('agency/modify')->middleware('auth:api')->group(function (){
     Route::post('info',[AgencyController::class,'modifyinfo'])->name('modifyinfo');
     Route::post('password',[AgencyController::class,'modifypassword'])->name('modifypassword');
-    Route::post('photo',[AgencyController::class,'modifyphoto'])->name('modifyphoto');
-    Route::post('phone-number',[AgencyController::class,'modifyphone'])->name('modifyphone');
+
+
 });
 Route::prefix('announce')->group(function(){
     Route::post('create',[AnnounceController::class,'createannounce'])->middleware('auth:api');
@@ -69,6 +72,8 @@ Route::prefix('announce')->group(function(){
     Route::post('comment',[CommentController::class,'create']);
     Route::get('forrent',[AnnounceController::class,'getrent']);
     Route::get('forsell',[AnnounceController::class,'getsell']);
+    Route::get('myannounces',[AnnounceController::class,'myannounces'])->middleware('auth:api');
+    Route::get('all',[AnnounceController::class,'index']);
 });
 Route::resource('likes', LikeController::class)->only([
     'index', 'store', 'destroy'

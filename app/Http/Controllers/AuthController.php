@@ -29,6 +29,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'type'=>$request->type,
         ]);
         event(new Registered($user));
         Auth::login($user);
@@ -46,11 +47,9 @@ class AuthController extends Controller
         // if user is correct and hasn't verified email
         if ($user &&
             Hash::check($request->password, $user->password) && ! $user->hasVerifiedEmail()) {
-            //return Response('email need to verify', 401);
             return response()->json('email need to verify',401);
         }
         // if user coordinate are wrong
-        //return Response('Your email or password incorrect', 400);
         return response()->json('Your email or password incorrect',400);
     }
     public function logout(Request $request){
