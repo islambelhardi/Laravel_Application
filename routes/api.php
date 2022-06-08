@@ -60,8 +60,6 @@ Route::prefix('agency')->group(function (){
 Route::prefix('agency/modify')->middleware('auth:api')->group(function (){
     Route::post('info',[AgencyController::class,'modifyinfo'])->name('modifyinfo');
     Route::post('password',[AgencyController::class,'modifypassword'])->name('modifypassword');
-
-
 });
 Route::prefix('announce')->group(function(){
     Route::post('create',[AnnounceController::class,'createannounce'])->middleware('auth:api');
@@ -90,11 +88,4 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
         }
         echo 'email verified';
     })->middleware(['signed'])->name('verification.verify');
-/*Route::get('/email/verify/{id}/{hash}', function (Request $request) {
-    $agency = \App\Models\Agency::where('id', $request->id)->first();
-    if (! $agency->hasVerifiedEmail()) {
-        $agency->markEmailAsVerified();
-        event(new Verified($agency));
-    }
-    echo 'email verified';
-})->middleware(['signed'])->name('verification.verify');*/
+

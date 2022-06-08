@@ -72,6 +72,8 @@ class UserController extends Controller
             $user->password = Hash::make($request->newpassword);
             $user->save();
             return response()->json('password changed ',200);
+        }else{
+            return response()->json('wrongpassword',400);
         }
     }
     public function modifyphoto(Request $request){
